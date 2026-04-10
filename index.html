@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consistency Tracker</title>
+    <link rel="stylesheet" href="style.css?v=2">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="background-effects">
+        <div class="blob magenta"></div>
+        <div class="blob cyan"></div>
+    </div>
+
+    <div id="app">
+        <!-- Login View -->
+        <main id="login-view" class="view glass-panel">
+            <div class="login-card">
+                <div class="icon glow-text">⚡</div>
+                <h1 class="glow-text">SYSTEM LOGIN</h1>
+                <p>Initialize your daily consistency matrix.</p>
+                <div class="input-group">
+                    <input type="text" id="username-input" placeholder="Enter operator ID" autocomplete="off" />
+                    <button id="login-btn" class="neon-btn">ACCESS</button>
+                </div>
+            </div>
+        </main>
+
+        <!-- Dashboard View -->
+        <main id="dashboard-view" class="view hidden">
+            <header class="glass-panel top-nav">
+                <div class="header-left">
+                    <h2 class="glow-text">Welcome, <span id="user-greeting">User</span>!</h2>
+                    <p class="subtitle" id="current-date-display"></p>
+                </div>
+                <div class="header-right" style="display: flex; gap: 0.5rem; align-items: center;">
+                    <button id="theme-btn" class="secondary-btn logout-glow" title="Toggle Theme">🌙</button>
+                    <button id="logout-btn" class="secondary-btn logout-glow">LOGOUT</button>
+                </div>
+            </header>
+
+            <div class="dashboard-grid">
+                <!-- Stats Section -->
+                <section class="stats-layer">
+                    <div class="stat-card glass-panel flex-row">
+                        <div class="stat-info">
+                            <h3>Max Streak</h3>
+                            <h2 id="global-streak" class="glow-text-cyan">0</h2>
+                        </div>
+                        <div class="stat-icon">🔥</div>
+                    </div>
+                    <div class="stat-card glass-panel flex-row">
+                        <div class="stat-info">
+                            <h3>Completion Rate</h3>
+                            <h2 id="global-consistency" class="glow-text-magenta">0%</h2>
+                        </div>
+                        <div class="stat-icon">📈</div>
+                    </div>
+                </section>
+
+                <!-- Chart Section -->
+                <section class="chart-section glass-panel">
+                    <h3>7-Day Performance Matrix</h3>
+                    <div class="canvas-wrapper">
+                        <canvas id="consistency-chart"></canvas>
+                    </div>
+                </section>
+
+                <!-- Activity Center -->
+                <section class="task-layer">
+                    <div class="add-task-wrapper glass-panel">
+                        <div class="input-group">
+                            <input type="text" id="new-task-input" placeholder="Deploy new daily objective..." autocomplete="off" />
+                            <button id="add-task-btn" class="neon-btn neon-cyan">DEPLOY</button>
+                        </div>
+                    </div>
+
+                    <div class="task-list-section">
+                        <div id="tasks-container">
+                            <!-- Tasks will be dynamically injected here -->
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script src="main.js?v=2"></script>
+</body>
+</html>
