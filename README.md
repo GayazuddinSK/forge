@@ -42,8 +42,8 @@ This project is built to:
 
 ## 📸 Screenshots
 
-![Login](assets/login.png)
-![Dashboard](assets/dashboard.png)
+![Login](netlify.png)
+![Dashboard](netlify1.png)
 
 ##  Live Demo
 
