@@ -40,6 +40,11 @@ This project is built to:
 * Notifications & reminders
 * Authentication system
 
+## 📸 Screenshots
+
+![Login](assets/login.png)
+![Dashboard](assets/dashboard.png)
+
 ##  Live Demo
 
 (https://comforting-maamoul-d21cc7.netlify.app/)
