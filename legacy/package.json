@@ -1,0 +1,23 @@
+{
+  "name": "miniprojects",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GayazuddinSK/forge.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/GayazuddinSK/forge/issues"
+  },
+  "homepage": "https://github.com/GayazuddinSK/forge#readme",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.105.4"
+  }
+}

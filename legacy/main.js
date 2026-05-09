@@ -1,5 +1,5 @@
 // Configuration
-const GAS_URL = "https://script.google.com/macros/s/AKfycbybueIUmUX1R0DmHbuHxrp7R6Zmw-y3MIWnFYM1VDh3Di4ZBk1WzlvSkdELkPu5Uhk/exec"; 
+const GAS_URL = "https://script.google.com/macros/s/AKfycbwokYuoAlVsZGmzceQBg6G0DQXgULpRUGxkED54ASdEzqc5StoVMxoLqDEmXjRMXq8/exec";
 
 // Local State
 let currentUser = null;
@@ -15,8 +15,11 @@ const logoutBtn = document.getElementById('logout-btn');
 const userGreeting = document.getElementById('user-greeting');
 const currentDateDisplay = document.getElementById('current-date-display');
 const newTaskInput = document.getElementById('new-task-input');
+const newTaskType = document.getElementById('new-task-type');
 const addTaskBtn = document.getElementById('add-task-btn');
 const tasksContainer = document.getElementById('tasks-container');
+const toggleHistoryBtn = document.getElementById('toggle-history-btn');
+const taskListTitle = document.getElementById('task-list-title');
 const maxStreakStat = document.getElementById('global-streak');
 const completionRateStat = document.getElementById('global-consistency');
 const chartCtx = document.getElementById('consistency-chart');
@@ -30,7 +33,7 @@ function applyTheme(t) {
     currentTheme = t;
     localStorage.setItem('consistency_theme', t);
     document.documentElement.setAttribute('data-theme', t);
-    
+
     // Icon
     if (t === 'light') themeBtn.textContent = '☀️';
     else if (t === 'uv') themeBtn.textContent = '👓';
@@ -68,14 +71,23 @@ function init() {
     currentDateDisplay.textContent = new Date().toLocaleDateString(undefined, options).toUpperCase();
 
     applyTheme(currentTheme);
-    
+
     themeBtn.addEventListener('click', () => {
         const nextIdx = (themes.indexOf(currentTheme) + 1) % themes.length;
         applyTheme(themes[nextIdx]);
     });
 
-    const savedUser = localStorage.getItem('consistency_username');
+    const savedUser = localStorage.getItem('currentUser');
     if (savedUser) handleLogin(savedUser);
+
+    let isShowingHistory = false;
+    toggleHistoryBtn.addEventListener('click', () => {
+        isShowingHistory = !isShowingHistory;
+        toggleHistoryBtn.textContent = isShowingHistory ? "BACK TO ACTIVE ⬅️" : "ARCHIVE 📁";
+        taskListTitle.textContent = isShowingHistory ? "ARCHIVAL PROTOCOLS" : "ACTIVE PROTOCOLS";
+        window.isShowingHistory = isShowingHistory; // globally Accessible
+        renderTasks();
+    });
 
     loginBtn.addEventListener('click', () => {
         const val = usernameInput.value.trim();
@@ -99,35 +111,64 @@ function init() {
 // Logic: Login
 function handleLogin(username) {
     currentUser = username;
-    localStorage.setItem('consistency_username', username);
+    localStorage.setItem('currentUser', username);
     userGreeting.textContent = username.toUpperCase();
-    
-    loadTasks();
-    processPastDueTasks();
-    renderTasks();
-    updateDashboardMetrics();
-    
+
     loginView.classList.add('hidden');
     dashboardView.classList.remove('hidden');
+
+    loadTasks();
 }
 
 // Logic: Logout
 function handleLogout() {
     currentUser = null;
     tasks = [];
-    localStorage.removeItem('consistency_username');
+    localStorage.removeItem('currentUser');
     usernameInput.value = '';
-    
+
     if (consistencyChart) consistencyChart.destroy();
-    
+
     dashboardView.classList.add('hidden');
     loginView.classList.remove('hidden');
 }
 
 // Logic: Tasks
-function loadTasks() {
+async function loadTasks() {
     const raw = localStorage.getItem(`consistency_tasks_${currentUser}`);
-    tasks = raw ? JSON.parse(raw) : [];
+    if (raw) {
+        tasks = JSON.parse(raw);
+        processPastDueTasks();
+        renderTasks();
+        updateDashboardMetrics();
+    }
+
+    try {
+        const res = await fetch(`${GAS_URL}?userId=${encodeURIComponent(currentUser)}`);
+        const data = await res.json();
+        if (data.success) {
+            tasks = data.tasks.map(t => ({
+                id: t.id,
+                name: t.task,
+                status: t.status,
+                priority: t.priority || 'Medium',
+                createdAt: t.createdAt,
+                completedAt: t.completedAt,
+                userId: t.userId,
+                type: t.type,
+                streak: t.streak,
+                history: t.history || {},
+                currentDate: t.currentDate,
+                lastCompletedDate: t.lastCompletedDate
+            }));
+            saveTasks();
+            processPastDueTasks();
+            renderTasks();
+            updateDashboardMetrics();
+        }
+    } catch (e) {
+        console.error("Failed to sync from sheets", e);
+    }
 }
 
 function saveTasks() {
@@ -138,13 +179,15 @@ function processPastDueTasks() {
     const today = getTodayStr();
     let mutated = false;
 
+    // Migrate old tasks structurally without deleting them
     tasks.forEach(t => {
-        if (!t.history) t.history = {}; // data migration constraint
+        if (!t.type) t.type = 'daily';
+        if (!t.history) t.history = {};
 
-        if (t.currentDate < today) {
+        if (t.currentDate < today && t.type !== 'one-time') {
             mutated = true;
             if (t.status === 'Pending') {
-                t.history[t.currentDate] = 'Missed'; // Auto-mark missed
+                t.history[t.currentDate] = 'Missed';
                 t.currentDate = today;
             } else {
                 t.currentDate = today;
@@ -157,9 +200,16 @@ function processPastDueTasks() {
 }
 
 function handleAddTask(name) {
+    const typeValue = newTaskType ? newTaskType.value : 'daily';
+    const prioritySelect = document.getElementById('new-task-priority');
+    const priorityValue = prioritySelect ? prioritySelect.value : 'Medium';
     const newTask = {
         id: generateId(),
         name: name,
+        type: typeValue,
+        priority: priorityValue,
+        createdAt: new Date().toISOString(),
+        completedAt: "",
         currentDate: getTodayStr(),
         status: 'Pending',
         streak: 0,
@@ -184,7 +234,7 @@ function handleDeleteTask(id) {
 function handleTaskAction(id, actionStr) {
     const t = tasks.find(x => x.id === id);
     if (!t) return;
-    if (t.status !== 'Pending') return; 
+    if (t.status !== 'Pending') return;
 
     const today = getTodayStr();
     const yesterday = getYesterdayStr();
@@ -192,41 +242,83 @@ function handleTaskAction(id, actionStr) {
     if (actionStr === 'Done') {
         if (t.lastCompletedDate === yesterday) t.streak += 1;
         else t.streak = 1;
-        
+
         t.status = 'Done';
         t.lastCompletedDate = today;
+        t.completedAt = new Date().toISOString();
         t.history[today] = 'Done';
+
+        if (t.type === 'one-time') {
+            pushToGoogleSheets(t);
+        }
     } else if (actionStr === 'Not Done') {
         t.status = 'Not Done';
         t.streak = 0;
         t.history[today] = 'Not Done';
+
+        if (t.type === 'one-time') {
+            // Push to sheet, doesn't delete, but won't carry over tomorrow.
+            pushToGoogleSheets(t);
+        }
     }
 
     saveTasks();
-    
-    // Quick DOM update
-    const taskEl = document.getElementById(t.id);
-    if (taskEl) {
-        taskEl.className = `task-item status-${actionStr}`;
-        const badge = taskEl.querySelector('.streak-badge');
-        if (badge) badge.textContent = `⚡ RANK ${t.streak}`;
-    }
-    
+
+    renderTasks();
     updateDashboardMetrics();
     pushToGoogleSheets(t);
 }
 
+function handleRedoTask(id) {
+    const t = tasks.find(x => x.id === id);
+    if (!t) return;
+    t.currentDate = getTodayStr();
+    t.status = 'Pending';
+    saveTasks();
+
+    // Jump user back sequentially to active dashboard to see it
+    window.isShowingHistory = false;
+    toggleHistoryBtn.textContent = "ARCHIVE 📁";
+    taskListTitle.textContent = "ACTIVE PROTOCOLS";
+
+    renderTasks();
+    updateDashboardMetrics();
+}
+
 function renderTasks() {
     tasksContainer.innerHTML = '';
-    
-    if (tasks.length === 0) {
-        tasksContainer.innerHTML = `<p style="text-align:center; color: var(--text-muted); grid-column: 1/-1;">No protocols active. Add a new objective above.</p>`;
+
+    const showHist = window.isShowingHistory === true;
+    const today = getTodayStr();
+
+    let filteredTasks = tasks.filter(t => {
+        if (showHist) {
+            // Archive: One-time tasks that are finished/skipped, OR belong to the past
+            return t.type === 'one-time' && (t.status !== 'Pending' || t.currentDate !== today);
+        } else {
+            // Active: Daily tasks, OR Pending one-time tasks meant for today
+            return t.type !== 'one-time' || (t.currentDate === today && t.status === 'Pending');
+        }
+    });
+
+    if (!showHist) {
+        filteredTasks.sort((a, b) => {
+            const pValues = { "High": 3, "Medium": 2, "Low": 1 };
+            const pA = pValues[a.priority || "Medium"] || 2;
+            const pB = pValues[b.priority || "Medium"] || 2;
+            return pB - pA;
+        });
+    }
+
+    if (filteredTasks.length === 0) {
+        let msg = showHist ? "No stored history available." : "No protocols active. Add a new objective above.";
+        tasksContainer.innerHTML = `<p style="text-align:center; color: var(--text-muted); grid-column: 1/-1;">${msg}</p>`;
         return;
     }
 
     const past7 = getPastDays(7).reverse(); // oldest to newest for tracker
-    
-    tasks.forEach(t => {
+
+    filteredTasks.forEach(t => {
         let dotsHTML = '<div class="history-dots">';
         past7.forEach(date => {
             const status = (t.history && t.history[date]) ? t.history[date] : 'None';
@@ -240,24 +332,40 @@ function renderTasks() {
         const div = document.createElement('div');
         div.className = `task-item status-${t.status}`;
         div.id = t.id;
-        
+
+        let actionsHTML = '';
+        if (showHist) {
+            actionsHTML = `
+                <button class="action-btn redo-btn" title="Redo Task">🔁</button>
+                <button class="action-btn delete-btn" title="Delete">🗑️</button>
+            `;
+        } else {
+            actionsHTML = `
+                <button class="action-btn done-btn" title="Complete" ${t.status !== 'Pending' ? 'disabled' : ''}>✅</button>
+                <button class="action-btn notdone-btn" title="Skip" ${t.status !== 'Pending' ? 'disabled' : ''}>❌</button>
+                <button class="action-btn delete-btn" title="Delete">🗑️</button>
+            `;
+        }
+
         div.innerHTML = `
             <div class="task-info">
-                <div class="task-name">${t.name}</div>
+                <div class="task-name">${t.name} ${t.type === 'one-time' ? '<span style="opacity:0.5; font-size:0.8rem; margin-left:5px;">(One-Time)</span>' : ''} <span class="priority-badge priority-${t.priority || 'Medium'}">${t.priority || 'Medium'}</span></div>
                 <div class="task-meta">
                     <span class="streak-badge">⚡ RANK ${t.streak}</span>
                 </div>
                 ${dotsHTML}
             </div>
             <div class="task-actions">
-                <button class="action-btn done-btn" title="Complete" ${t.status!=='Pending'?'disabled':''}>✅</button>
-                <button class="action-btn notdone-btn" title="Skip" ${t.status!=='Pending'?'disabled':''}>❌</button>
-                <button class="action-btn delete-btn" title="Delete">🗑️</button>
+                ${actionsHTML}
             </div>
         `;
-        
-        div.querySelector('.done-btn').addEventListener('click', () => handleTaskAction(t.id, 'Done'));
-        div.querySelector('.notdone-btn').addEventListener('click', () => handleTaskAction(t.id, 'Not Done'));
+
+        if (showHist) {
+            div.querySelector('.redo-btn').addEventListener('click', () => handleRedoTask(t.id));
+        } else {
+            div.querySelector('.done-btn').addEventListener('click', () => handleTaskAction(t.id, 'Done'));
+            div.querySelector('.notdone-btn').addEventListener('click', () => handleTaskAction(t.id, 'Not Done'));
+        }
         div.querySelector('.delete-btn').addEventListener('click', () => handleDeleteTask(t.id));
 
         tasksContainer.appendChild(div);
@@ -274,16 +382,25 @@ function updateDashboardMetrics() {
     const today = getTodayStr();
     let totalToday = 0;
     let doneToday = 0;
-    
+
     tasks.forEach(t => {
         if (t.currentDate === today) {
             totalToday++;
             if (t.status === 'Done') doneToday++;
         }
     });
-    
+
     const consistency = totalToday === 0 ? 0 : Math.round((doneToday / totalToday) * 100);
     completionRateStat.textContent = `${consistency}%`;
+
+    const ring = document.getElementById('consistency-ring');
+    if (ring) {
+        const radius = ring.r.baseVal.value;
+        const circumference = radius * 2 * Math.PI;
+        const offset = circumference - (consistency / 100) * circumference;
+        ring.style.strokeDasharray = `${circumference} ${circumference}`;
+        ring.style.strokeDashoffset = offset;
+    }
 
     // Visual Graph: 7-Day Completion History
     const past7Days = getPastDays(7);
@@ -319,7 +436,7 @@ function renderChart(labels, dataHits) {
     let gridColor = "rgba(255, 255, 255, 0.05)";
     let lineColor = '#00f0ff';
     let lineBg = 'rgba(0, 240, 255, 0.1)';
-    
+
     if (theme === 'light') {
         textColor = "rgba(0, 0, 0, 0.5)";
         gridColor = "rgba(0, 0, 0, 0.05)";
@@ -378,12 +495,18 @@ function renderChart(labels, dataHits) {
 
 function pushToGoogleSheets(taskObj) {
     const payload = {
-        Date: taskObj.currentDate,
-        User: currentUser,
-        TaskID: taskObj.id,
-        Task: taskObj.name,
-        Status: taskObj.status,
-        Streak: taskObj.streak
+        id: taskObj.id,
+        task: taskObj.name,
+        status: taskObj.status,
+        priority: taskObj.priority || "Medium",
+        createdAt: taskObj.createdAt || new Date().toISOString(),
+        completedAt: taskObj.completedAt || "",
+        userId: currentUser,
+        type: taskObj.type || 'daily',
+        streak: taskObj.streak,
+        history: taskObj.history || {},
+        currentDate: taskObj.currentDate || getTodayStr(),
+        lastCompletedDate: taskObj.lastCompletedDate || ""
     };
 
     fetch(GAS_URL, {

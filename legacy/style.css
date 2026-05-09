@@ -32,7 +32,7 @@
     text-shadow: none; 
 }
 [data-theme="light"] .blob { opacity: 0.15; }
-[data-theme="light"] input[type="text"] { background: rgba(255,255,255,0.8); }
+[data-theme="light"] input[type="text"], [data-theme="light"] .neon-select { background: rgba(255,255,255,0.8); }
 
 [data-theme="uv"] {
     --bg-color: #120500; 
@@ -162,7 +162,7 @@ body {
 
 /* Inputs & Neon Buttons */
 .input-group { display: flex; gap: 0.5rem; width: 100%; }
-input[type="text"] {
+input[type="text"], .neon-select {
     flex: 1;
     background: rgba(0, 0, 0, 0.4);
     border: 1px solid var(--glass-border);
@@ -172,7 +172,16 @@ input[type="text"] {
     font-size: 1rem;
     transition: all 0.3s;
 }
-input[type="text"]:focus {
+.neon-select {
+    flex: 0 0 auto;
+    width: 140px;
+    cursor: pointer;
+}
+.neon-select option {
+    background: var(--bg-color);
+    color: var(--text-color);
+}
+input[type="text"]:focus, .neon-select:focus {
     outline: none;
     border-color: var(--primary-cyan);
     box-shadow: 0 0 10px var(--primary-cyan-dim);
@@ -247,6 +256,19 @@ input[type="text"]:focus {
     letter-spacing: 1px;
 }
 
+.priority-badge {
+    font-size: 0.65rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-left: 8px;
+    font-weight: 600;
+    text-transform: uppercase;
+    vertical-align: middle;
+}
+.priority-High { background: rgba(255, 51, 102, 0.2); color: var(--danger-color); border: 1px solid var(--danger-color); }
+.priority-Medium { background: rgba(0, 240, 255, 0.2); color: var(--primary-cyan); border: 1px solid var(--primary-cyan); }
+.priority-Low { background: rgba(139, 155, 180, 0.2); color: var(--text-muted); border: 1px solid var(--text-muted); }
+
 .task-actions { display: flex; gap: 0.5rem; }
 .action-btn {
     background: transparent;
@@ -259,6 +281,7 @@ input[type="text"]:focus {
 }
 .done-btn:hover:not(:disabled) { border-color: var(--success-color); box-shadow: 0 0 10px rgba(0, 255, 170, 0.2); }
 .notdone-btn:hover:not(:disabled) { border-color: var(--danger-color); box-shadow: 0 0 10px rgba(255, 51, 102, 0.2); }
+.redo-btn:hover { border-color: var(--primary-cyan); box-shadow: 0 0 10px var(--primary-cyan-dim); }
 .delete-btn { font-size: 0.9rem; opacity: 0.5; }
 .delete-btn:hover:not(:disabled) { opacity: 1; border-color: #fff; }
 
