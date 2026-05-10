@@ -23,33 +23,33 @@ const GitHubWidget = () => {
         <div className="w-16 h-16 rounded-full border-2 border-arc/50 p-1 relative">
           {/* Mock Avatar */}
           <div className="w-full h-full rounded-full bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
-             <Github className="w-8 h-8 text-gray-500" />
+             <Github className="w-8 h-8 text-textMuted" />
           </div>
           {/* Online indicator */}
           <div className="absolute bottom-0 right-0 w-4 h-4 bg-green-500 border-2 border-surface rounded-full shadow-[0_0_10px_#22c55e]"></div>
         </div>
         
         <div>
-          <h3 className="font-sans font-bold text-gray-100 text-lg">GayazuddinSK</h3>
-          <p className="font-tech text-gray-400 text-sm uppercase tracking-widest">Full-Stack Engineer</p>
+          <h3 className="font-sans font-bold text-textMain text-lg">GayazuddinSK</h3>
+          <p className="font-tech text-textMuted text-sm uppercase tracking-widest">Full-Stack Engineer</p>
         </div>
       </div>
 
       <div className="grid grid-cols-3 gap-2 mb-6 relative z-10">
         <div className="bg-surface/50 border border-surfaceBorder rounded p-2 text-center">
-          <GitBranch className="w-4 h-4 text-gray-400 mx-auto mb-1" />
+          <GitBranch className="w-4 h-4 text-textMuted mx-auto mb-1" />
           <div className="font-tech text-arc text-lg">24</div>
-          <div className="text-[10px] text-gray-500 uppercase tracking-wider">Repos</div>
+          <div className="text-[10px] text-textMuted uppercase tracking-wider">Repos</div>
         </div>
         <div className="bg-surface/50 border border-surfaceBorder rounded p-2 text-center">
-          <Star className="w-4 h-4 text-gray-400 mx-auto mb-1" />
+          <Star className="w-4 h-4 text-textMuted mx-auto mb-1" />
           <div className="font-tech text-arc text-lg">12</div>
-          <div className="text-[10px] text-gray-500 uppercase tracking-wider">Stars</div>
+          <div className="text-[10px] text-textMuted uppercase tracking-wider">Stars</div>
         </div>
         <div className="bg-surface/50 border border-surfaceBorder rounded p-2 text-center">
-          <GitCommit className="w-4 h-4 text-gray-400 mx-auto mb-1" />
+          <GitCommit className="w-4 h-4 text-textMuted mx-auto mb-1" />
           <div className="font-tech text-arc text-lg">482</div>
-          <div className="text-[10px] text-gray-500 uppercase tracking-wider">Commits</div>
+          <div className="text-[10px] text-textMuted uppercase tracking-wider">Commits</div>
         </div>
       </div>
 

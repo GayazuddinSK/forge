@@ -12,7 +12,7 @@ const ResumeWidget = () => {
           <FileText className="w-6 h-6 text-stark-gold" />
           <h2 className="tech-heading text-xl text-transparent bg-clip-text bg-gradient-to-r from-stark-gold to-yellow-600">DOSSIER</h2>
         </div>
-        <span className="text-xs font-tech text-gray-500 uppercase">v2.4.1 Active</span>
+        <span className="text-xs font-tech text-textMuted uppercase">v2.4.1 Active</span>
       </div>
 
       <div className="flex-grow flex items-center justify-center relative z-10 mb-6">
@@ -21,17 +21,17 @@ const ResumeWidget = () => {
             <FileBadge className="w-8 h-8 text-stark-gold" />
           </div>
           <div>
-            <h3 className="font-sans font-medium text-gray-200">GAYAZ_SHAIK_RESUME.DOCX</h3>
+            <h3 className="font-sans font-medium text-textMain">GAYAZ_SHAIK_RESUME.DOCX</h3>
             <div className="flex items-center space-x-4 mt-2">
-              <span className="text-xs font-tech text-gray-500 uppercase">Size: 2.4 MB</span>
-              <span className="text-xs font-tech text-gray-500 uppercase">Updated: 2D Ago</span>
+              <span className="text-xs font-tech text-textMuted uppercase">Size: 2.4 MB</span>
+              <span className="text-xs font-tech text-textMuted uppercase">Updated: 2D Ago</span>
             </div>
           </div>
         </div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-auto relative z-10">
-        <a href="/Gayaz_Shaik_Resume.docx" target="_blank" rel="noopener noreferrer" className="relative overflow-hidden bg-surface text-gray-300 border border-surfaceBorder px-4 py-2 rounded font-tech tracking-wider uppercase transition-all duration-300 flex items-center justify-center hover:bg-gray-800 hover:text-white hover:border-gray-500">
+        <a href="/Gayaz_Shaik_Resume.docx" target="_blank" rel="noopener noreferrer" className="relative overflow-hidden bg-surface text-textMain border border-surfaceBorder px-4 py-2 rounded font-tech tracking-wider uppercase transition-all duration-300 flex items-center justify-center hover:bg-gray-800 hover:text-white hover:border-gray-500">
           <Eye className="w-4 h-4 mr-2" />
           <span>PREVIEW</span>
         </a>

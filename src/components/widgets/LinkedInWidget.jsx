@@ -28,9 +28,9 @@ const LinkedInWidget = () => {
         </div>
 
         <div>
-          <h3 className="font-sans font-bold text-gray-100 text-lg">Gayazuddin S.K.</h3>
-          <p className="font-tech text-gray-400 text-sm uppercase tracking-widest mt-1">n8n Automation Engineer</p>
-          <div className="flex items-center justify-center space-x-2 mt-3 text-xs font-tech text-gray-500 uppercase tracking-widest">
+          <h3 className="font-sans font-bold text-textMain text-lg">Gayazuddin S.K.</h3>
+          <p className="font-tech text-textMuted text-sm uppercase tracking-widest mt-1">n8n Automation Engineer</p>
+          <div className="flex items-center justify-center space-x-2 mt-3 text-xs font-tech text-textMuted uppercase tracking-widest">
             <span className="flex items-center"><Network className="w-3 h-3 mr-1" /> 270+ Conn</span>
             <span>|</span>
             <span className="flex items-center"><Users className="w-3 h-3 mr-1" /> Open To Work</span>

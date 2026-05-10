@@ -97,14 +97,14 @@ const AttendanceTracker = () => {
           <Activity className="w-6 h-6 text-arc" />
           <h2 className="tech-heading text-xl">ATTENDANCE PROTOCOL</h2>
         </div>
-        <span className="text-xs font-tech text-gray-500 uppercase">Module: Python_Port</span>
+        <span className="text-xs font-tech text-textMuted uppercase">Module: Python_Port</span>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
         {/* Overall Status Card */}
         <div className="bg-background/50 border border-surfaceBorder rounded-lg p-4 flex flex-col items-center justify-center relative overflow-hidden">
           <div className={`absolute top-0 w-full h-1 bg-gradient-to-r from-transparent via-${isDanger ? 'stark-red' : 'arc'} to-transparent transition-colors duration-500`}></div>
-          <span className="font-tech text-gray-400 text-sm uppercase">Overall Status</span>
+          <span className="font-tech text-textMuted text-sm uppercase">Overall Status</span>
           <div className={`text-4xl font-tech mt-2 transition-colors duration-500 ${isDanger ? 'text-stark-red drop-shadow-red-glow' : 'text-arc drop-shadow-arc'}`}>
             {data.percentage}%
           </div>
@@ -117,16 +117,16 @@ const AttendanceTracker = () => {
         {/* Details Card */}
         <div className="bg-surface/30 border border-surfaceBorder rounded-lg p-4 flex flex-col justify-center space-y-2">
           <div className="flex justify-between items-center text-sm font-tech uppercase tracking-wider">
-            <span className="text-gray-500">Total Classes</span>
-            <span className="text-gray-200">{data.total_classes}</span>
+            <span className="text-textMuted">Total Classes</span>
+            <span className="text-textMain">{data.total_classes}</span>
           </div>
           <div className="flex justify-between items-center text-sm font-tech uppercase tracking-wider">
-            <span className="text-gray-500">Attended</span>
-            <span className="text-gray-200">{data.attended_classes}</span>
+            <span className="text-textMuted">Attended</span>
+            <span className="text-textMain">{data.attended_classes}</span>
           </div>
           <div className="flex justify-between items-center text-xs font-tech uppercase tracking-wider mt-2 border-t border-surfaceBorder pt-2">
-            <span className="text-gray-500">Last Sync</span>
-            <span className="text-gray-400 text-[10px]">{data.last_updated}</span>
+            <span className="text-textMuted">Last Sync</span>
+            <span className="text-textMuted text-[10px]">{data.last_updated}</span>
           </div>
         </div>
       </div>
@@ -137,7 +137,7 @@ const AttendanceTracker = () => {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
             <button 
               onClick={() => setMode('update_total')}
-              className="bg-surface border border-surfaceBorder hover:border-arc/50 hover:text-arc text-gray-400 text-xs font-tech uppercase rounded p-2 flex flex-col items-center justify-center transition-all group"
+              className="bg-surface border border-surfaceBorder hover:border-arc/50 hover:text-arc text-textMuted text-xs font-tech uppercase rounded p-2 flex flex-col items-center justify-center transition-all group"
             >
               <Edit2 className="w-4 h-4 mb-1 group-hover:scale-110 transition-transform" />
               <span>Update All</span>
@@ -151,7 +151,7 @@ const AttendanceTracker = () => {
             </button>
             <button 
               onClick={handleReset}
-              className="bg-surface border border-surfaceBorder hover:border-stark-red/50 hover:text-stark-red text-gray-400 text-xs font-tech uppercase rounded p-2 flex flex-col items-center justify-center transition-all group"
+              className="bg-surface border border-surfaceBorder hover:border-stark-red/50 hover:text-stark-red text-textMuted text-xs font-tech uppercase rounded p-2 flex flex-col items-center justify-center transition-all group"
             >
               <RotateCcw className="w-4 h-4 mb-1 group-hover:scale-110 transition-transform" />
               <span>Reset</span>
@@ -166,14 +166,14 @@ const AttendanceTracker = () => {
               <span className="font-tech text-arc text-sm uppercase tracking-widest">
                 {mode === 'update_total' ? 'Update Total Attendance' : "Add Today's Attendance"}
               </span>
-              <button type="button" onClick={() => setMode('view')} className="text-gray-500 hover:text-stark-red transition-colors">
+              <button type="button" onClick={() => setMode('view')} className="text-textMuted hover:text-stark-red transition-colors">
                 <X className="w-4 h-4" />
               </button>
             </div>
             
             <div className="space-y-3">
               <div>
-                <label className="block text-[10px] text-gray-500 font-tech uppercase mb-1">
+                <label className="block text-[10px] text-textMuted font-tech uppercase mb-1">
                   {mode === 'update_total' ? 'Total Classes So Far' : 'Classes Conducted Today'}
                 </label>
                 <input 
@@ -182,12 +182,12 @@ const AttendanceTracker = () => {
                   required
                   value={inputTotal}
                   onChange={(e) => setInputTotal(e.target.value)}
-                  className="w-full bg-background/50 border border-surfaceBorder rounded px-3 py-2 text-sm text-gray-200 focus:outline-none focus:border-arc/50 transition-colors"
+                  className="w-full bg-background/50 border border-surfaceBorder rounded px-3 py-2 text-sm text-textMain focus:outline-none focus:border-arc/50 transition-colors"
                   placeholder="e.g. 5"
                 />
               </div>
               <div>
-                <label className="block text-[10px] text-gray-500 font-tech uppercase mb-1">
+                <label className="block text-[10px] text-textMuted font-tech uppercase mb-1">
                   {mode === 'update_total' ? 'Classes You Attended' : 'Classes Attended Today'}
                 </label>
                 <input 
@@ -196,7 +196,7 @@ const AttendanceTracker = () => {
                   required
                   value={inputAttended}
                   onChange={(e) => setInputAttended(e.target.value)}
-                  className="w-full bg-background/50 border border-surfaceBorder rounded px-3 py-2 text-sm text-gray-200 focus:outline-none focus:border-arc/50 transition-colors"
+                  className="w-full bg-background/50 border border-surfaceBorder rounded px-3 py-2 text-sm text-textMain focus:outline-none focus:border-arc/50 transition-colors"
                   placeholder="e.g. 4"
                 />
               </div>

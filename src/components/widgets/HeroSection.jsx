@@ -37,11 +37,11 @@ const HeroSection = () => {
       </div>
 
       <div className="space-y-2 z-10">
-        <h2 className="text-gray-400 font-tech text-xl tracking-widest uppercase">System Initialization...</h2>
+        <h2 className="text-textMuted font-tech text-xl tracking-widest uppercase">System Initialization...</h2>
         <h1 className="tech-heading text-3xl sm:text-4xl md:text-5xl lg:text-6xl">
           WELCOME BACK, ADMIN
         </h1>
-        <p className="text-gray-300 max-w-xl mt-4 text-sm sm:text-base">
+        <p className="text-textMain max-w-xl mt-4 text-sm sm:text-base">
           All systems are online and functioning within normal parameters. 
           Your productivity protocols are ready to be engaged.
         </p>
@@ -51,7 +51,7 @@ const HeroSection = () => {
         <div className="font-tech text-4xl text-arc tracking-wider drop-shadow-red-glow">
           {formatTime(time)}
         </div>
-        <div className="text-gray-400 font-tech text-lg uppercase tracking-widest mt-1">
+        <div className="text-textMuted font-tech text-lg uppercase tracking-widest mt-1">
           {formatDate(time)}
         </div>
         <button className="tech-button mt-6">

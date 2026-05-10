@@ -3,30 +3,142 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    /* Fallback/Default Theme (Iron Man Dark) */
+    --color-bg: #050505;
+    --color-surface: rgba(10, 15, 25, 0.7);
+    --color-surface-border: rgba(6, 182, 212, 0.2);
+    --color-text-main: #f3f4f6;
+    --color-text-muted: #9ca3af;
+    
+    --color-primary-light: #67e8f9;
+    --color-primary: #06b6d4;
+    --color-primary-dark: #0891b2;
+    --rgb-primary: 6, 182, 212;
+    
+    --color-accent-1: #dc2626;
+    --rgb-accent-1: 220, 38, 38;
+    --color-accent-2: #f59e0b;
+  }
+
+  [data-theme="ironman-light"] {
+    --color-bg: #f8fafc;
+    --color-surface: rgba(255, 255, 255, 0.8);
+    --color-surface-border: rgba(6, 182, 212, 0.3);
+    --color-text-main: #0f172a;
+    --color-text-muted: #475569;
+    
+    --color-primary-light: #38bdf8;
+    --color-primary: #0ea5e9;
+    --color-primary-dark: #0284c7;
+    --rgb-primary: 14, 165, 233;
+    
+    --color-accent-1: #dc2626;
+    --rgb-accent-1: 220, 38, 38;
+    --color-accent-2: #d97706;
+  }
+
+  [data-theme="spiderman-dark"] {
+    --color-bg: #0f172a;
+    --color-surface: rgba(15, 23, 42, 0.7);
+    --color-surface-border: rgba(239, 68, 68, 0.2);
+    --color-text-main: #f1f5f9;
+    --color-text-muted: #94a3b8;
+    
+    --color-primary-light: #fca5a5;
+    --color-primary: #ef4444;
+    --color-primary-dark: #b91c1c;
+    --rgb-primary: 239, 68, 68;
+    
+    --color-accent-1: #3b82f6;
+    --rgb-accent-1: 59, 130, 246;
+    --color-accent-2: #eab308;
+  }
+
+  [data-theme="spiderman-light"] {
+    --color-bg: #f1f5f9;
+    --color-surface: rgba(255, 255, 255, 0.9);
+    --color-surface-border: rgba(239, 68, 68, 0.3);
+    --color-text-main: #0f172a;
+    --color-text-muted: #475569;
+    
+    --color-primary-light: #f87171;
+    --color-primary: #ef4444;
+    --color-primary-dark: #dc2626;
+    --rgb-primary: 239, 68, 68;
+    
+    --color-accent-1: #2563eb;
+    --rgb-accent-1: 37, 99, 235;
+    --color-accent-2: #ca8a04;
+  }
+
+  [data-theme="wakanda-dark"] {
+    --color-bg: #09090b;
+    --color-surface: rgba(9, 9, 11, 0.8);
+    --color-surface-border: rgba(168, 85, 247, 0.2);
+    --color-text-main: #f8fafc;
+    --color-text-muted: #a1a1aa;
+    
+    --color-primary-light: #c084fc;
+    --color-primary: #a855f7;
+    --color-primary-dark: #7e22ce;
+    --rgb-primary: 168, 85, 247;
+    
+    --color-accent-1: #94a3b8;
+    --rgb-accent-1: 148, 163, 184;
+    --color-accent-2: #f1f5f9;
+  }
+
+  [data-theme="wakanda-light"] {
+    --color-bg: #f8fafc;
+    --color-surface: rgba(255, 255, 255, 0.8);
+    --color-surface-border: rgba(168, 85, 247, 0.3);
+    --color-text-main: #18181b;
+    --color-text-muted: #52525b;
+    
+    --color-primary-light: #a855f7;
+    --color-primary: #9333ea;
+    --color-primary-dark: #7e22ce;
+    --rgb-primary: 147, 51, 234;
+    
+    --color-accent-1: #475569;
+    --rgb-accent-1: 71, 85, 105;
+    --color-accent-2: #1e293b;
+  }
+
   body {
-    @apply bg-background text-gray-100 font-sans antialiased min-h-screen selection:bg-arc selection:text-black;
+    @apply bg-background text-textMain font-sans antialiased min-h-screen selection:bg-arc selection:text-white transition-colors duration-500;
     background-image: 
-      radial-gradient(circle at 50% 0%, rgba(6, 182, 212, 0.1) 0%, transparent 50%),
-      radial-gradient(circle at 100% 100%, rgba(220, 38, 38, 0.05) 0%, transparent 50%);
+      radial-gradient(circle at 50% 0%, rgba(var(--rgb-primary), 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 100% 100%, rgba(var(--rgb-accent-1), 0.05) 0%, transparent 50%);
     background-attachment: fixed;
   }
 }
 
 @layer components {
   .glass-panel {
-    @apply bg-surface backdrop-blur-md border border-surfaceBorder rounded-xl shadow-arc transition-all duration-300;
+    @apply backdrop-blur-md rounded-xl transition-all duration-300;
+    background: var(--color-surface);
+    border: 1px solid rgba(var(--rgb-primary), 0.2);
+    box-shadow: 0 0 10px rgba(var(--rgb-primary), 0.3), inset 0 0 10px rgba(var(--rgb-primary), 0.1);
   }
   
   .glass-panel:hover {
-    @apply shadow-arc-hover border-arc/50;
+    border-color: rgba(var(--rgb-primary), 0.5);
+    box-shadow: 0 0 15px rgba(var(--rgb-primary), 0.6), inset 0 0 15px rgba(var(--rgb-primary), 0.2);
   }
 
   .tech-button {
-    @apply relative overflow-hidden bg-arc/10 text-arc border border-arc/50 px-4 py-2 rounded font-tech tracking-wider uppercase transition-all duration-300;
+    @apply relative overflow-hidden px-4 py-2 rounded font-tech tracking-wider uppercase transition-all duration-300;
+    background: rgba(var(--rgb-primary), 0.1);
+    color: var(--color-primary);
+    border: 1px solid rgba(var(--rgb-primary), 0.5);
   }
   
   .tech-button:hover {
-    @apply bg-arc text-black shadow-arc-hover scale-[1.02];
+    @apply scale-[1.02] text-white;
+    background: var(--color-primary);
+    box-shadow: 0 0 15px rgba(var(--rgb-primary), 0.6), inset 0 0 15px rgba(var(--rgb-primary), 0.2);
   }
   
   .tech-button:active {
@@ -34,7 +146,8 @@
   }
 
   .tech-heading {
-    @apply font-tech font-bold tracking-wider uppercase text-transparent bg-clip-text bg-gradient-to-r from-arc-light to-arc;
+    @apply font-tech font-bold tracking-wider uppercase text-transparent bg-clip-text;
+    background-image: linear-gradient(to right, var(--color-primary-light), var(--color-primary));
   }
 }
 
@@ -44,14 +157,14 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: #050505;
+  background: var(--color-bg);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(6, 182, 212, 0.3);
+  background: rgba(var(--rgb-primary), 0.3);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(6, 182, 212, 0.6);
+  background: rgba(var(--rgb-primary), 0.6);
 }
